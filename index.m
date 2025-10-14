@@ -1,6 +1,6 @@
-function[headers,dataMatrix] = getData(wantedHeader)
+function[headers,dataMatrix] = getData()
     % Open the file and store the fileID into file1
-    IDfile1 = fopen("S2run25markers.txt",'r');
+    IDfile1 = fopen("TEST_DATA.txt",'r');
     
     mat = [];
 
@@ -24,7 +24,14 @@ end
 
 function[series] = getSeries(headername,headers,data)
     % get a particular series from the data
-    series = find(headers == headername);
+    seriesNum = find(headers == headername);
+    series = data(:,seriesNum); 
 end
+
 [headers,data] = getData();
-getSeries(headers)
+
+x = getSeries("R.Heel.BottomY",headers,data);
+
+t = [1:4500]
+plot(t,x)
+
