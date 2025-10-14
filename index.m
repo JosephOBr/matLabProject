@@ -31,7 +31,9 @@ end
 [headers,data] = getData();
 
 x = getSeries("R.Heel.BottomY",headers,data);
+[~,peaks] = findpeaks(x);
+[~,mins] = findpeaks(-x);
 
-t = [1:4500]
-plot(t,x)
+t = [1:4500];
+plot(t,x); hold on; plot(peaks,x(peaks),'or'); plot(mins,x(mins),'or')
 
