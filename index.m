@@ -1,39 +1,77 @@
-function[headers,dataMatrix] = getData()
+format longG
+function[seriesData] = getSeries(seriesNames)
+
+    %wb = waitbar(0,sprintf('Getting %s data', strjoin(string(seriesNames), ', ')));
+    fprintf('Reading %s from file \n',strjoin(string(seriesNames), ', '))
     % Open the file and store the fileID into file1
-    IDfile1 = fopen("TEST_DATA.txt",'r');
-    
-    mat = [];
-
-    % Read the file data line-by-line
-    while ~feof(IDfile1)
-    
-        nextRow = strsplit(fgetl(IDfile1),',');
-        mat = [mat; nextRow];
-            
+    IDfile1 = fopen("S2run25markers.txt",'r');
+    % get the number of series requested
+    targetCount = numel(seriesNames);
+    % series data will accumilate the requested series in an array
+    seriesData = cell(1, targetCount);
+    % seriesNums contains the index of each requested series
+    seriesNums = zeros(1,targetCount);
+    % store the row containing headers
+    headers = strsplit(fgetl(IDfile1),',');
+    % find the index of each series of interest and store it in seriesNums
+    for i = 1:targetCount
+        seriesNums(i) = find(headers == seriesNames(i));
     end
-    
-    % get the heading values (strings)
-    headers = mat(1, :);               
+    % Read the file data line-by-line, store the requested values from each
+    % row in tempData, and then distribute it to each relevent series in
+    % seriesData
+    nextDatam = "";
 
-    % Convert the other values to doubles and add them to a new matrix
-    dataMatrix = str2double(mat(2:end, :)); 
+    i = 1;
+    while ~feof(IDfile1)
+        % Read the row and split it by commas
+        nextRow = strsplit(fgetl(IDfile1),',');
 
+        for n = 1:targetCount
+            % Get the column(s) we're interested in into nextDatam(n1,
+            % n2,...)
+            nextDatam = str2double(nextRow(seriesNums(n)));
+            % This line adds the nextdatam to the relevant series in the 'seriesData' array. 
+            % This line of code took way too long to figure out so please dont ask about it. 
+            seriesData(1,n) = {[seriesData{1,n} , nextDatam]};
+            
+            % only update UI every 1000 lines since it slows down the
+            % program dramatically
+            if mod(i,1000) == 0
+                % Chat-GPT 5 was used for this following line (since it is only
+                % for aesthetics I decided to not work it out myself)
+                %waitbar(i/(4500*targetCount), wb, ...
+                    %sprintf('Reading %s from file \n%d/%d lines read', strjoin(string(seriesNames), ', '), i, 4500*targetCount));
+                fprintf('%d/%d lines read \n', i, 4500*targetCount);
+            end
+            i=i+1;
+        end
+    end
+    disp("Done");
     % Close the file
     fclose(IDfile1);
+    %close(wb);
 end
 
-function[series] = getSeries(headername,headers,data)
-    % get a particular series from the data
-    seriesNum = find(headers == headername);
-    series = data(:,seriesNum); 
+function[strideDurations] = getStrideDurations(yData,timeData)
+    % mins are the INDEXES of each MINIMUM VALUE
+    [~,mins] = findpeaks(-yData);
+    times0 = [timeData(mins),0];
+    times1 = [0,timeData(mins)];
+
+
+    strideDurations = times0 - times1;
+
+
+    %t = [1:length(yData)];
+    %plot(t,yData); hold on; plot(mins,yData(mins),'or')
+
 end
 
-[headers,data] = getData();
+data = getSeries(["R.Heel.BottomY","Time"]);
+[rightHeelY, timeData] = data{:};
 
-x = getSeries("R.Heel.BottomY",headers,data);
-[~,peaks] = findpeaks(x);
-[~,mins] = findpeaks(-x);
+plot(timeData,rightHeelY,'or');
 
-t = [1:4500];
-plot(t,x); hold on; plot(peaks,x(peaks),'or'); plot(mins,x(mins),'or')
-
+getStrideDurations(rightHeelY,timeData);
+disp("*___________________________*")
