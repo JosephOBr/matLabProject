@@ -4,7 +4,7 @@ function[seriesData] = getSeries(seriesNames)
     %wb = waitbar(0,sprintf('Getting %s data', strjoin(string(seriesNames), ', ')));
     fprintf('Reading %s from file \n',strjoin(string(seriesNames), ', '))
     % Open the file and store the fileID into file1
-    IDfile1 = fopen("S2run25markers.txt",'r');
+    IDfile1 = fopen("S2run45markers.txt",'r');
     % get the number of series requested
     targetCount = numel(seriesNames);
     % series data will accumilate the requested series in an array
@@ -59,19 +59,73 @@ function[strideDurations] = getStrideDurations(yData,timeData)
     times0 = [timeData(mins),0];
     times1 = [0,timeData(mins)];
 
-
     strideDurations = times0 - times1;
+    strideDurations = strideDurations(1:end-1);
+end
 
-
-    %t = [1:length(yData)];
-    %plot(t,yData); hold on; plot(mins,yData(mins),'or')
+function[strideLength] = getStrideLength()
 
 end
 
-data = getSeries(["R.Heel.BottomY","Time"]);
-[rightHeelY, timeData] = data{:};
+function makePlots(timeData,nStrides,strideDurations, lPelvisY, rPelvisY, ...
+    rightHeelX, rightHeelY, leftHeelX, leftHeelY)
+    disp("Making plots")
+    figure
+    subplot(2,3,1)
+    plot(nStrides,strideDurations);
+    title("Duration for each stride")
+    xlabel("# number stride")
+    ylabel("Time (s)")
+    
+    subplot(2,3,2)
+    plot(nStrides,nStrides);
+    title("Length of each stride")
+    xlabel("# number stride")
+    ylabel("Length (m)")
+    
+    subplot(2,3,3)
+    plot(nStrides,nStrides);
+    title("Stride speed")
+    xlabel("# number stride")
+    ylabel("v (m/s)")
+    
+    subplot(2,3,4)
+    plot(timeData, (lPelvisY+rPelvisY)/2); 
+    hold off;
+    title("Average pelvis vertical position")
+    xlabel("Time (s)")
+    ylabel("distance (m)")
+    
+    subplot(2,3,5)
+    plot(leftHeelX,leftHeelY);
+    title("Left foot position")
+    xlabel("X data (mm)")
+    ylabel("Y data (mm)")
+    
+    subplot(2,3,6)
+    plot(rightHeelX,rightHeelY);
+    title("Right foot position")
+    xlabel("X data (mm)")
+    ylabel("Y data (mm)")
+end
 
-plot(timeData,rightHeelY,'or');
+disp("START")
 
-getStrideDurations(rightHeelY,timeData);
-disp("*___________________________*")
+% READ DATA FROM FILE
+data = getSeries(["Time","R.Heel.BottomX","R.Heel.BottomY","R.Heel.BottomZ", ...
+   "L.ASISY","R.ASISY","L.Heel.BottomX","L.Heel.BottomY"]);
+% Save data to variables
+[timeData, rightHeelX, rightHeelY, rightHeelZ, lPelvisY, rPelvisY,leftHeelX,...
+    leftHeelY] = data{:};
+
+% GET STRIDE DURATIONS
+strideDurations = getStrideDurations(rightHeelY,timeData);
+nStrides = 1:length(strideDurations);
+
+% PLOT THE STUFF
+makePlots(timeData,nStrides,strideDurations, lPelvisY, rPelvisY,rightHeelX, ...
+    rightHeelY, leftHeelX, leftHeelY);
+
+
+disp("END")
+disp("*_____________________*")

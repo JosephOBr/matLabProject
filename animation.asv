@@ -1,0 +1,98 @@
+function[seriesData] = getSeries(seriesNames)
+
+    %wb = waitbar(0,sprintf('Getting %s data', strjoin(string(seriesNames), ', ')));
+    fprintf('Reading %s from file \n',strjoin(string(seriesNames), ', '))
+    % Open the file and store the fileID into file1
+    IDfile1 = fopen("S2run45markers.txt",'r');
+    % get the number of series requested
+    targetCount = numel(seriesNames);
+    % series data will accumilate the requested series in an array
+    seriesData = cell(1, targetCount);
+    % seriesNums contains the index of each requested series
+    seriesNums = zeros(1,targetCount);
+    % store the row containing headers
+    headers = strsplit(fgetl(IDfile1),',');
+    % find the index of each series of interest and store it in seriesNums
+    for i = 1:targetCount
+        seriesNums(i) = find(headers == seriesNames(i));
+    end
+    % Read the file data line-by-line, store the requested values from each
+    % row in tempData, and then distribute it to each relevent series in
+    % seriesData
+    nextDatam = "";
+
+    i = 1;
+    while ~feof(IDfile1)
+        % Read the row and split it by commas
+        nextRow = strsplit(fgetl(IDfile1),',');
+
+        for n = 1:targetCount
+            % Get the column(s) we're interested in into nextDatam(n1,
+            % n2,...)
+            nextDatam = str2double(nextRow(seriesNums(n)));
+            % This line adds the nextdatam to the relevant series in the 'seriesData' array. 
+            % This line of code took way too long to figure out so please dont ask about it. 
+            seriesData(1,n) = {[seriesData{1,n} , nextDatam]};
+            
+            % only update UI every 1000 lines since it slows down the
+            % program dramatically
+            if mod(i,1000) == 0
+                % Chat-GPT 5 was used for this following line (since it is only
+                % for aesthetics I decided to not work it out myself)
+                %waitbar(i/(4500*targetCount), wb, ...
+                    %sprintf('Reading %s from file \n%d/%d lines read', strjoin(string(seriesNames), ', '), i, 4500*targetCount));
+                fprintf('%d/%d lines read \n', i, 4500*targetCount);
+            end
+            i=i+1;
+        end
+    end
+    disp("Done");
+    % Close the file
+    fclose(IDfile1);
+    %close(wb);
+end
+
+% % READ DATA FROM FILE
+% data = getSeries(["Time","R.ASISX","R.ASISY","R.Heel.BottomX","R.Heel.BottomY"]);
+% % Save data to variables
+% [timeData, rPelvisX,rPelvisY,rightHeelX, rightHeelY] = data{:};
+
+
+fig = figure('Color','w');
+ax  = axes('Parent', fig);
+hold(ax, 'on');          % IMPORTANT: prevents plot() from clearing prior graphics
+axis(ax, [1500 4000 0 4000]);
+% axis(ax, 'equal');
+% grid(ax, 'on');
+% xlabel(ax,'X'); ylabel(ax,'Y'); title(ax,'Marker Animation');
+
+
+
+%h = plot(ax, nan, nan, 'b', 'LineWidth', 0.1, 'MarkerSize', 10);
+
+
+rfoot|_plot = plot(ax, rightHeelX(1), rightHeelY(1), 'rx', 'LineWidth', 3);
+pelvis_plot = plot(ax, rPelvisX(1), rPelvisY(1), 'rx', 'MarkerSize', 8, 'LineWidth', 3);
+
+pauseTime = 0.005;    % ~200 FPS (adjust as needed)
+for frame = 1:min(4500, numel(rightHeelX))
+    currentX = get(h, 'XData');
+    currentY = get(h, 'YData');
+
+    newX = [currentX, rightHeelX(frame)];
+    newY = [currentY, rightHeelY(frame)];
+
+    %set(h, 'XData', newX, 'YData', newY);
+
+    set(foot_plot,'XData', rightHeelX(frame),'YData', rightHeelY(frame));
+    set(pelvis_plot,'XData', rPelvisX(frame),'YData', rPelvisY(frame));
+
+    title(ax, sprintf('Frame %d', frame));
+
+    drawnow;
+    %pause(pauseTime);
+end
+
+disp("END");
+
+disp("*_____________________*")
