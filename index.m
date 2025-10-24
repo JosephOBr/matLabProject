@@ -92,18 +92,23 @@ function makePlots(timeData,nStrides,strideDurations, lPelvisY, rPelvisY, ...
     subplot(2,3,4)
     plot(timeData, (lPelvisY+rPelvisY)/2); 
     hold off;
-    title("Average pelvis vertical position")
+    title("Pelvis vertical position")
     xlabel("Time (s)")
     ylabel("distance (m)")
     
     subplot(2,3,5)
     plot(leftHeelX,leftHeelY);
+    xlim([1400 2800])
+    ylim([0 800])
     title("Left foot position")
     xlabel("X data (mm)")
     ylabel("Y data (mm)")
+
     
     subplot(2,3,6)
     plot(rightHeelX,rightHeelY);
+    xlim([1400 2800])
+    ylim([0 800])
     title("Right foot position")
     xlabel("X data (mm)")
     ylabel("Y data (mm)")
