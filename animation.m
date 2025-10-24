@@ -53,9 +53,9 @@ function[seriesData] = getSeries(seriesNames)
 end
 
 % READ DATA FROM FILE
-% data = getSeries([
-% "R.ASISX","R.ASISY","L.ASISX","L.ASISY","R.PSISX","R.PSISY","L.PSISX","L.PSISY","R.Iliac.CrestX","R.Iliac.CrestY","L.Iliac.CrestX","L.Iliac.CrestY","R.Thigh.Top.LateralX","R.Thigh.Top.LateralY","L.Thigh.Top.LateralX","L.Thigh.Top.LateralY","R.Thigh.Bottom.LateralX","R.Thigh.Bottom.LateralY","L.Thigh.Bottom.LateralX","L.Thigh.Bottom.LateralY","R.Thigh.Top.MedialX","R.Thigh.Top.MedialY","L.Thigh.Top.MedialX","L.Thigh.Top.MedialY","R.Thigh.Bottom.MedialX","R.Thigh.Bottom.MedialY","L.Thigh.Bottom.MedialX","L.Thigh.Bottom.MedialY","R.Shank.Top.LateralX","R.Shank.Top.LateralY","L.Shank.Top.LateralX","L.Shank.Top.LateralY","R.Shank.Bottom.LateralX","R.Shank.Bottom.LateralY","L.Shank.Bottom.LateralX","L.Shank.Bottom.LateralY","R.Shank.Top.MedialX","R.Shank.Top.MedialY","L.Shank.Top.MedialX","L.Shank.Top.MedialY","R.Shank.Bottom.MedialX","R.Shank.Bottom.MedialY","L.Shank.Bottom.MedialX","L.Shank.Bottom.MedialY","R.Heel.TopX","R.Heel.TopY","L.Heel.TopX","L.Heel.TopY","R.Heel.BottomX","R.Heel.BottomY","L.Heel.BottomX","L.Heel.BottomY","R.Heel.LateralX","R.Heel.LateralY","L.Heel.LateralX","L.Heel.LateralY","R.MT1X","R.MT1Y","L.MT1X","L.MT1Y","R.MT5X","R.MT5Y","L.MT5X","L.MT5Y"
-% ]);
+data = getSeries([
+"R.ASISX","R.ASISY","L.ASISX","L.ASISY","R.PSISX","R.PSISY","L.PSISX","L.PSISY","R.Iliac.CrestX","R.Iliac.CrestY","L.Iliac.CrestX","L.Iliac.CrestY","R.Thigh.Top.LateralX","R.Thigh.Top.LateralY","L.Thigh.Top.LateralX","L.Thigh.Top.LateralY","R.Thigh.Bottom.LateralX","R.Thigh.Bottom.LateralY","L.Thigh.Bottom.LateralX","L.Thigh.Bottom.LateralY","R.Thigh.Top.MedialX","R.Thigh.Top.MedialY","L.Thigh.Top.MedialX","L.Thigh.Top.MedialY","R.Thigh.Bottom.MedialX","R.Thigh.Bottom.MedialY","L.Thigh.Bottom.MedialX","L.Thigh.Bottom.MedialY","R.Shank.Top.LateralX","R.Shank.Top.LateralY","L.Shank.Top.LateralX","L.Shank.Top.LateralY","R.Shank.Bottom.LateralX","R.Shank.Bottom.LateralY","L.Shank.Bottom.LateralX","L.Shank.Bottom.LateralY","R.Shank.Top.MedialX","R.Shank.Top.MedialY","L.Shank.Top.MedialX","L.Shank.Top.MedialY","R.Shank.Bottom.MedialX","R.Shank.Bottom.MedialY","L.Shank.Bottom.MedialX","L.Shank.Bottom.MedialY","R.Heel.TopX","R.Heel.TopY","L.Heel.TopX","L.Heel.TopY","R.Heel.BottomX","R.Heel.BottomY","L.Heel.BottomX","L.Heel.BottomY","R.Heel.LateralX","R.Heel.LateralY","L.Heel.LateralX","L.Heel.LateralY","R.MT1X","R.MT1Y","L.MT1X","L.MT1Y","R.MT5X","R.MT5Y","L.MT5X","L.MT5Y"
+]);
 % Save data to variables
 
 fig = figure('Color','w');
