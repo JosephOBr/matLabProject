@@ -53,39 +53,47 @@ function[seriesData] = getSeries(seriesNames)
 end
 
 % % READ DATA FROM FILE
-% data = getSeries(["Time","R.ASISX","R.ASISY","R.Heel.BottomX","R.Heel.BottomY"]);
+% data = getSeries(["R.ASISX","R.ASISY","R.Heel.BottomX","R.Heel.BottomY","L.Heel.BottomX","L.Heel.BottomY"]);
 % % Save data to variables
-% [timeData, rPelvisX,rPelvisY,rightHeelX, rightHeelY] = data{:};
-
 
 fig = figure('Color','w');
 ax  = axes('Parent', fig);
 hold(ax, 'on');          % IMPORTANT: prevents plot() from clearing prior graphics
 axis(ax, [1500 4000 0 4000]);
-% axis(ax, 'equal');
-% grid(ax, 'on');
-% xlabel(ax,'X'); ylabel(ax,'Y'); title(ax,'Marker Animation');
 
+h = plot(ax, nan, nan, 'b', 'LineWidth', 0.1, 'MarkerSize', 10);
+plots = [];
+for i = 1:2:length(data)
+        plots = [ plots, plot(ax,data{i}(n),data{i+1}(n),'rx','lineWidth',3) ];
+end
 
+% rfoot_plot = plot(ax, rHeelX(1), rHeelY(1), 'rx', 'LineWidth', 3);
+% lfoot_plot = plot(ax, lHeelX(1), lHeelY(1), 'rx', 'LineWidth', 3);
 
-%h = plot(ax, nan, nan, 'b', 'LineWidth', 0.1, 'MarkerSize', 10);
-
-
-rfoot|_plot = plot(ax, rightHeelX(1), rightHeelY(1), 'rx', 'LineWidth', 3);
-pelvis_plot = plot(ax, rPelvisX(1), rPelvisY(1), 'rx', 'MarkerSize', 8, 'LineWidth', 3);
+% pelvis_plot = plot(ax, rPelvisX(1), rPelvisY(1), 'rx', 'MarkerSize', 8, 'LineWidth', 3);
 
 pauseTime = 0.005;    % ~200 FPS (adjust as needed)
-for frame = 1:min(4500, numel(rightHeelX))
-    currentX = get(h, 'XData');
-    currentY = get(h, 'YData');
-
-    newX = [currentX, rightHeelX(frame)];
-    newY = [currentY, rightHeelY(frame)];
+disp(length(plots))
+for frame = 2:4500
+    for n = 1:length(plots)
+        xData = data{i}(frame);
+        yData = data{i+1}(frame);
+        set(plots(n),'XData', xData, 'YData', yData);
+    end
+    
+    
+    % currentX = get(h, 'XData');
+    % currentY = get(h, 'YData');
+    % 
+    % newX = [currentX, rHeelX(frame)];
+    % newY = [currentY, rHeelY(frame)];
 
     %set(h, 'XData', newX, 'YData', newY);
 
-    set(foot_plot,'XData', rightHeelX(frame),'YData', rightHeelY(frame));
-    set(pelvis_plot,'XData', rPelvisX(frame),'YData', rPelvisY(frame));
+    % set(rfoot_plot,'XData', rHeelX(frame),'YData', rHeelY(frame));
+    % set(lfoot_plot,'XData', lHeelX(frame),'YData', lHeelY(frame));
+    % 
+    % set(pelvis_plot,'XData', rPelvisX(frame),'YData', rPelvisY(frame));
 
     title(ax, sprintf('Frame %d', frame));
 
