@@ -121,8 +121,9 @@ for i = 1:3
 end
 
 % Animate each plot
-pauseTime = 0.0005;
+pauseTime = 0.0016;
 for frame = 0:4500
+    pause(pauseTime);
     for i = 1:3
         currentData = datasets{i};
         plots = plotsArray{i};
